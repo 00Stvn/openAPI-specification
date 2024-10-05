@@ -1,0 +1,90 @@
+openapi: 3.0.0
+info:
+  title: Movie Ticket Reservation API
+  version: 1.0.0
+  description: This API handles the movie selection, seat reservation, and ticket purchasing process for customers using an online movie ticket booking service.
+  
+paths:
+  /movies:
+    get:
+      summary: Get a list of available movies
+      description: Returns a list of movies that customers can select for showtime and seat reservations.
+      responses:
+        '200':
+          description: A list of movies is successfully returned.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    movieId:
+                      type: string
+                      description: The ID of the movie.
+                    title:
+                      type: string
+                      description: The title of the movie.
+                    genre:
+                      type: string
+                      description: The genre of the movie.
+                    runtime:
+                      type: string
+                      description: Duration of the movie.
+        '404':
+          description: No movies found.
+  
+  /showtimes:
+    post:
+      summary: Get showtimes for a selected movie
+      description: Returns available showtimes for the specified movie based on the movie ID.
+      requestBody:
+        description: The movie ID for which the showtimes are requested.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                movieId:
+                  type: string
+                  description: The ID of the selected movie.
+      responses:
+        '200':
+          description: Showtimes for the selected movie.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  movieId:
+                    type: string
+                    description: The ID of the movie.
+                  showtimes:
+                    type: array
+                    items:
+                      type: string
+                      description: Available showtimes for the movie.
+        '404':
+          description: Movie not found or no showtimes available.
+
+  /reservation/{reservationId}:
+    delete:
+      summary: Cancel a seat reservation
+      description: Cancels the seat reservation based on the provided reservation ID.
+      parameters:
+        - in: path
+          name: reservationId
+          required: true
+          schema:
+            type: string
+          description: The ID of the seat reservation to cancel.
+      responses:
+        '200':
+          description: Reservation successfully cancelled.
+        '400':
+          description: Bad request due to missing or invalid reservation ID.
+        '404':
+          description: Reservation not found.
+        '500':
+          description: Internal server error while processing the request.
